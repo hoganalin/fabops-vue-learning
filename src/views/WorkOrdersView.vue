@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { useFactoryStore } from "../stores/factory";
-import { ref, computed } from "vue";
+import { storeToRefs } from "pinia";
+import { useStatusFilter } from "../composables/useStatusFilter";
+import { ref } from "vue";
 import type { WorkOrderStatus } from "../types/factory";
 
 const factoryStore = useFactoryStore();
+const { workOrders } = storeToRefs(factoryStore);
 const statusFilter = ref<WorkOrderStatus | "all">("all");
-const filteredWorkOrders = computed(() => {
-  if (statusFilter.value === "all") {
-    return factoryStore.workOrders;
-  } else {
-    return factoryStore.workOrders.filter(
-      (order) => order.status === statusFilter.value,
-    );
-  }
-});
+
+const { filteredItems: filteredWorkOrders } = useStatusFilter(
+  workOrders,
+  statusFilter,
+);
 </script>
 
 <template>
