@@ -44,7 +44,9 @@ function readQueryPriority(value: unknown): LotPriority | "all" {
 const { lots } = storeToRefs(factoryStore);
 const selectedLot = ref<ProductionLot | null>(null);
 const search = ref(readQueryText(route.query.search));
-const statusFilter = ref<LotStatus | "all">(readQueryStatus(route.query.status));
+const statusFilter = ref<LotStatus | "all">(
+  readQueryStatus(route.query.status),
+);
 const priorityFilter = ref<LotPriority | "all">(
   readQueryPriority(route.query.priority),
 );

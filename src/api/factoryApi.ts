@@ -2,18 +2,21 @@ import {
   factoryAlerts,
   productionLines,
   productionLots,
+  workOrders,
 } from "../data/factory";
 
 import type {
   FactoryAlert,
   ProductionLine,
   ProductionLot,
+  WorkOrder,
 } from "../types/factory";
 
 export interface FactorySnapshot {
   lines: ProductionLine[];
   alerts: FactoryAlert[];
   lots: ProductionLot[];
+  workOrders: WorkOrder[];
 }
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -41,5 +44,6 @@ export async function getFactorySnapshot(): Promise<FactorySnapshot> {
     lines: productionLines,
     alerts: factoryAlerts,
     lots: productionLots,
+    workOrders: workOrders,
   });
 }

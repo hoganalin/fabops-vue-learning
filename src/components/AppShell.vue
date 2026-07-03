@@ -18,6 +18,10 @@ const navItems = [
     label: "Handoff",
     to: "/handoff",
   },
+  {
+    label: "Work Orders",
+    to: "/work-orders",
+  },
 ];
 const factoryStore = useFactoryStore();
 
@@ -54,13 +58,17 @@ function handleSimulateNextSnapshotFailure() {
         <p class="eyebrow">Smart Factory Operations</p>
         <h1>FabOps Console</h1>
         <p class="page-description">
-  Monitor line health, dispatch lots, and manage shift handoffs in real time.</p>
+          Monitor line health, dispatch lots, and manage shift handoffs in real
+          time.
+        </p>
         <div class="snapshot-toolbar" aria-label="Factory snapshot status">
           <p
             class="snapshot-status"
             :class="{ 'snapshot-status-error': factoryStore.error }"
           >
-            <template v-if="factoryStore.isLoading">Loading snapshot...</template>
+            <template v-if="factoryStore.isLoading"
+              >Loading snapshot...</template
+            >
             <template v-else-if="factoryStore.error">{{
               factoryStore.error
             }}</template>

@@ -10,12 +10,14 @@ import type {
   LotDispatchRequest,
   ShiftHandoff,
   HandoffRequest,
+  WorkOrder,
 } from "../types/factory";
 
 export const useFactoryStore = defineStore("factory", () => {
   const lines = ref<ProductionLine[]>([]);
   const alerts = ref<FactoryAlert[]>([]);
   const lots = ref<ProductionLot[]>([]);
+  const workOrders = ref<WorkOrder[]>([]);
   const lotActionEvents = ref<LotActionEvent[]>([]);
   const selectedLineId = ref("");
   const isLoading = ref(false);
@@ -163,6 +165,7 @@ export const useFactoryStore = defineStore("factory", () => {
       lines.value = snapshot.lines;
       alerts.value = snapshot.alerts;
       lots.value = snapshot.lots;
+      workOrders.value = snapshot.workOrders;
       selectedLineId.value = snapshot.lines[0]?.id ?? "";
     } catch (cause) {
       error.value =
@@ -210,5 +213,6 @@ export const useFactoryStore = defineStore("factory", () => {
     simulateNextSnapshotFailure,
     handoffs,
     submitHandoff,
+    workOrders,
   };
 });
