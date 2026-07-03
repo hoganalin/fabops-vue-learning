@@ -1,8 +1,8 @@
-# FabOps Vue Learning
+# FabOps Console
 
-FabOps Vue Learning 是一個用 Vue 3 製作的智慧工廠前端練習專案，情境設定在新竹製造業的產線管理。
+FabOps Console 是一個用 Vue 3 打造的智慧工廠產線管理系統，情境設定在新竹製造業的產線現場。
 
-這個專案不是單純做靜態畫面，而是透過產線狀態、工廠警報、Lot 管理、派工、Hold/Release/Complete、API loading/error/retry、URL 篩選同步和測試，練習 Vue 在真實工作場景中的資料流。
+系統涵蓋產線狀態監控、工廠警報、Lot 管理、派工、Hold/Release/Complete 產線事件、API loading/error/retry 處理，以及可透過網址分享的篩選狀態，完整呈現真實產線前端的資料流。
 
 ## 專案亮點
 
@@ -71,21 +71,26 @@ npm run build
 - `npm run test` 通過 `useLotFilters` 測試。
 - `npm run build` 通過 Vue 型別檢查與正式打包。
 
-## 面試 Demo 流程
+## 技術架構
 
-1. 打開 Dashboard，介紹工廠 snapshot。
-2. 點擊 Simulate API Error，再點擊 Retry。
-3. 進入 Lots 頁面。
-4. 使用 rocket priority 或 hold status 篩選 Lot。
-5. 選取 Lot，說明右側詳細資料。
-6. Dispatch 一筆 pending Lot 到設備。
-7. 對 Lot 執行 Hold、Release 或 Complete。
-8. 展示 Recent Lot Actions。
-9. 複製篩選後的 URL，說明 shareable state。
-10. 執行 `npm run test` 和 `npm run build`。
+```txt
+src/
+├── api/          模擬 MES API（延遲、錯誤注入、snapshot）
+├── stores/       Pinia store：產線、警報、Lot 狀態與 actions
+├── composables/  可重用邏輯（useLotFilters，含 Vitest 測試）
+├── components/   展示型元件（props in / emits out）
+├── views/        頁面層：Dashboard、Lots、Handoff
+├── router/       Vue Router（lazy-loaded routes）
+└── types/        TypeScript 型別定義
+```
 
-## 面試說法
+資料流：`API → Pinia store → View → Component → User action → Store update → UI update`
 
-我用這個專案從 React 背景學習 Vue。與其只練語法，我選擇一個接近新竹製造業的產線情境，練習 Vue 如何處理狀態、衍生資料、元件溝通、路由同步、表單流程、API 狀態和可測試的商業邏輯。
+- 元件只透過 props/emits 溝通，跨頁狀態集中在 Pinia store。
+- Lot 篩選邏輯抽成 composable，讓商業邏輯可以獨立測試。
+- 篩選條件透過 watch 同步到 URL query，重新整理與分享連結都能還原狀態。
 
-這個 UI 不是靜態展示。使用者操作會更新 Vue state，computed 會重新計算 Lot 清單，watch 會把篩選條件同步到 URL，Vitest 則驗證核心篩選邏輯。
+## 更多文件
+
+- [專案架構說明](docs/project-architecture.md)
+- [部署指南](docs/deployment-guide.md)

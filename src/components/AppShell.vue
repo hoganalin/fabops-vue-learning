@@ -51,11 +51,10 @@ function handleSimulateNextSnapshotFailure() {
 
     <main class="workspace">
       <header class="page-header">
-        <p class="eyebrow">Chapter 16</p>
-        <h1>FabOps Learning Console</h1>
+        <p class="eyebrow">Smart Factory Operations</p>
+        <h1>FabOps Console</h1>
         <p class="page-description">
-          Practice Vue with line health, alerts, lots, and shift handoff.
-        </p>
+  Monitor line health, dispatch lots, and manage shift handoffs in real time.</p>
         <div class="snapshot-toolbar" aria-label="Factory snapshot status">
           <p
             class="snapshot-status"

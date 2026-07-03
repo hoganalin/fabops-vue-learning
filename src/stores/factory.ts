@@ -8,6 +8,8 @@ import type {
   LotHoldRequest,
   LotActionEvent,
   LotDispatchRequest,
+  ShiftHandoff,
+  HandoffRequest,
 } from "../types/factory";
 
 export const useFactoryStore = defineStore("factory", () => {
@@ -18,6 +20,7 @@ export const useFactoryStore = defineStore("factory", () => {
   const selectedLineId = ref("");
   const isLoading = ref(false);
   const error = ref("");
+  const handoffs = ref<ShiftHandoff[]>([]);
 
   const selectedLine = computed(() => {
     return (
@@ -172,6 +175,17 @@ export const useFactoryStore = defineStore("factory", () => {
     failNextFactorySnapshot();
     void fetchSnapshot();
   }
+  function submitHandoff(request: HandoffRequest) {
+    const timestamp = new Date().toISOString();
+    const newHandoff: ShiftHandoff = {
+      id: `handoff-${timestamp}`,
+      ...request,
+      createdAt: timestamp,
+      openAlertCount: activeAlerts.value.length,
+      holdLotCount: holdLots.value.length,
+    };
+    handoffs.value = [newHandoff, ...handoffs.value];
+  }
   return {
     lines,
     selectedLineId,
@@ -194,5 +208,7 @@ export const useFactoryStore = defineStore("factory", () => {
     completeLot,
     addLotActionEvent,
     simulateNextSnapshotFailure,
+    handoffs,
+    submitHandoff,
   };
 });

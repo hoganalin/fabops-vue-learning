@@ -6,6 +6,7 @@ export type LotStatus = "pending" | "running" | "hold" | "completed";
 export type LotPriority = "normal" | "hot" | "superhot" | "rocket";
 export type LotActionType = "dispatch" | "hold" | "release" | "complete";
 export type HandoffRisk = "low" | "medium" | "high";
+export type ShiftName = "day" | "swing" | "night";
 
 export interface ProductionLine {
   id: string;
@@ -45,15 +46,6 @@ export interface WorkOrder {
   updatedAt: string;
 }
 
-export interface HandoffNote {
-  id: string;
-  lineId: string;
-  shiftLead: string;
-  summary: string;
-  risk: HandoffRisk;
-  createdAt: string;
-}
-
 export interface ProductionLot {
   id: string;
   product: string;
@@ -86,4 +78,22 @@ export interface LotDispatchRequest {
   lotId: string;
   equipmentId: string;
   owner: string;
+}
+export interface ShiftHandoff {
+  id: string;
+  lineId: string;
+  shift: ShiftName;
+  shiftLead: string;
+  summary: string;
+  risk: HandoffRisk;
+  createdAt: string;
+  openAlertCount: number;
+  holdLotCount: number;
+}
+export interface HandoffRequest {
+  lineId: string;
+  shift: ShiftName;
+  shiftLead: string;
+  summary: string;
+  risk: HandoffRisk;
 }
