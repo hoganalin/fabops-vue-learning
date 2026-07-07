@@ -2,6 +2,7 @@
 import { useFactoryStore } from "../stores/factory";
 import { ref } from "vue";
 import type { ShiftName, HandoffRisk } from "../types/factory";
+import LotEventList from "../components/LotEventList.vue";
 
 const factoryStore = useFactoryStore();
 const lineId = ref("");
@@ -49,28 +50,7 @@ const handleSubmitHandoff = () => {
       </ul>
     </section>
 
-    <section class="lot-event-panel" aria-label="recent lot action events">
-      <div class="section-heading-row">
-        <h3>Recent Lot Action Events</h3>
-        <span>{{ factoryStore.recentLotActionEvents.length }}</span>
-      </div>
-      <p
-        v-if="factoryStore.recentLotActionEvents.length === 0"
-        class="empty-state"
-      >
-        No recent lot action events.
-      </p>
-      <ul v-else class="lot-event-list">
-        <li
-          v-for="event in factoryStore.recentLotActionEvents"
-          :key="event.id"
-          class="lot-event-item"
-        >
-          <strong>{{ event.type }}</strong>
-          <p>{{ event.lotId }}</p>
-        </li>
-      </ul>
-    </section>
+    <LotEventList :events="factoryStore.recentLotActionEvents" />
     <section class="lot-event-panel" aria-label="active alerts">
       <div class="section-heading-row">
         <h3>Active Alerts</h3>

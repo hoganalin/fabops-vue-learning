@@ -6,7 +6,8 @@ import LotTable from "../components/LotTable.vue";
 import { useFactoryStore } from "../stores/factory";
 import { useLotFilters } from "../composables/useLotFilters";
 import type { ProductionLot, LotPriority, LotStatus } from "../types/factory";
-
+import LotDetailPanel from "../components/LotDetailPanel.vue";
+import LotEventList from "../components/LotEventList.vue";
 const factoryStore = useFactoryStore();
 const router = useRouter();
 const route = useRoute();
@@ -167,16 +168,6 @@ function handleReleaseLot() {
   factoryStore.releaseLot(lotId);
   selectedLot.value = factoryStore.lots.find((lot) => lot.id === lotId) ?? null;
 }
-function formatDateTime(dateString: string) {
-  return new Intl.DateTimeFormat("zh-TW", {
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(new Date(dateString));
-}
 </script>
 
 <template>
@@ -236,51 +227,7 @@ function formatDateTime(dateString: string) {
     />
 
     <aside v-if="selectedLot" class="lot-detail-panel">
-      <div>
-        <p class="eyebrow">Selected Lot</p>
-        <h2>{{ selectedLot.id }}</h2>
-      </div>
-
-      <div class="lot-detail-grid">
-        <div class="lot-detail-item">
-          <span>Product</span>
-          <strong>{{ selectedLot.product }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Current Step</span>
-          <strong>{{ selectedLot.currentStep }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Equipment</span>
-          <strong>{{ selectedLot.equipmentId ?? "Unassigned" }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Wafer Count</span>
-          <strong>{{ selectedLot.waferCount }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Status</span>
-          <strong>{{ selectedLot.status }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Priority</span>
-          <strong>{{ selectedLot.priority }}</strong>
-        </div>
-
-        <div class="lot-detail-item">
-          <span>Due At</span>
-          <strong>{{ formatDateTime(selectedLot.dueAt) }}</strong>
-        </div>
-      </div>
-
-      <p v-if="selectedLot.holdReason" class="lot-hold-message">
-        Hold reason: {{ selectedLot.holdReason }}
-      </p>
+      <LotDetailPanel :lot="selectedLot" />
       <section class="dispatch-form" aria-label="dispatch form">
         <label class="filter-field">
           dispatch equipment
@@ -353,37 +300,7 @@ function formatDateTime(dateString: string) {
           Complete Lot
         </button>
       </section>
-      <section class="lot-event-panel" aria-label="recent lot actions">
-        <div class="section-heading-row">
-          <h3>Recent Lot Actions</h3>
-          <span>{{ factoryStore.recentLotActionEvents.length }}</span>
-        </div>
-        <p
-          v-if="factoryStore.recentLotActionEvents.length === 0"
-          class="empty-state"
-        >
-          No lot actions yet.
-        </p>
-        <ul v-else class="lot-event-list">
-          <li
-            v-for="event in factoryStore.recentLotActionEvents"
-            :key="event.id"
-            class="lot-event-item"
-          >
-            <div>
-              <strong>{{ event.type }}</strong>
-              <span>{{ event.lotId }}</span>
-            </div>
-            <p>{{ event.fromStatus }} -> {{ event.toStatus }}</p>
-            <p v-if="event.reason" class="lot-event-reason">
-              {{ event.reason }}
-            </p>
-            <small>
-              {{ event.owner }} - {{ formatDateTime(event.createdAt) }}
-            </small>
-          </li>
-        </ul>
-      </section>
+      <LotEventList :events="factoryStore.recentLotActionEvents" />
     </aside>
   </section>
 </template>
