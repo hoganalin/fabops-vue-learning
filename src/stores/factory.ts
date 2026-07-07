@@ -11,6 +11,8 @@ import type {
   ShiftHandoff,
   HandoffRequest,
   WorkOrder,
+  LotActionType,
+  LotStatus,
 } from "../types/factory";
 
 export const useFactoryStore = defineStore("factory", () => {
@@ -44,34 +46,46 @@ export const useFactoryStore = defineStore("factory", () => {
   function addLotActionEvent(event: LotActionEvent) {
     lotActionEvents.value = [event, ...lotActionEvents.value];
   }
+  function holdLot(request: LotHoldRequest) {
+    const reason = request.reason.trim() || "Manual engineering hold";
+    applyLotTransition(
+      request.lotId,
+      "hold",
+      "hold",
+      { holdReason: reason },
+      reason,
+      request.owner,
+    );
+  }
   function releaseLot(lotId: string) {
-    const timestamp = new Date().toISOString();
-    const targetLot = lots.value.find((lot) => lot.id === lotId);
-    if (!targetLot) {
-      return;
-    }
-    addLotActionEvent({
-      id: `event-${timestamp}-${lotId}`,
+    applyLotTransition(
       lotId,
-      type: "release",
-      fromStatus: targetLot.status,
-      toStatus: "pending",
-      reason: null,
-      owner: "Shift lead",
-      createdAt: timestamp,
-    });
-    lots.value = lots.value.map((lot) =>
-      lot.id === lotId
-        ? {
-            ...lot,
-            status: "pending",
-            holdReason: null,
-            updatedAt: timestamp,
-          }
-        : lot,
+      "release",
+      "pending",
+      { holdReason: null },
+      null,
+      "Shift lead",
     );
   }
   function completeLot(lotId: string) {
+    applyLotTransition(
+      lotId,
+      "complete",
+      "completed",
+      { holdReason: null },
+      null,
+      "Shift lead",
+    );
+  }
+
+  function applyLotTransition(
+    lotId: string,
+    type: LotActionType,
+    toStatus: LotStatus,
+    changes: Partial<ProductionLot>,
+    reason: string | null,
+    owner: string,
+  ) {
     const timestamp = new Date().toISOString();
     const targetLot = lots.value.find((lot) => lot.id === lotId);
     if (!targetLot) {
@@ -80,49 +94,33 @@ export const useFactoryStore = defineStore("factory", () => {
     addLotActionEvent({
       id: `event-${timestamp}-${lotId}`,
       lotId,
-      type: "complete",
+      type: type,
       fromStatus: targetLot.status,
-      toStatus: "completed",
-      reason: null,
-      owner: "Shift lead",
+      toStatus: toStatus,
+      reason: reason,
+      owner: owner,
       createdAt: timestamp,
     });
     lots.value = lots.value.map((lot) =>
       lot.id === lotId
         ? {
             ...lot,
-            status: "completed",
-            holdReason: null,
+            status: toStatus,
+            ...changes,
             updatedAt: timestamp,
           }
         : lot,
     );
   }
+
   function dispatchLot(request: LotDispatchRequest) {
-    const timestamp = new Date().toISOString();
-    const targetLot = lots.value.find((lot) => lot.id === request.lotId);
-    if (!targetLot) {
-      return;
-    }
-    addLotActionEvent({
-      id: `event-${timestamp}-${request.lotId}`,
-      lotId: request.lotId,
-      type: "dispatch",
-      fromStatus: targetLot.status,
-      toStatus: "running",
-      reason: `Dispatched to ${request.equipmentId}`,
-      owner: request.owner,
-      createdAt: timestamp,
-    });
-    lots.value = lots.value.map((lot) =>
-      lot.id === request.lotId
-        ? {
-            ...lot,
-            status: "running",
-            equipmentId: request.equipmentId,
-            updatedAt: timestamp,
-          }
-        : lot,
+    applyLotTransition(
+      request.lotId,
+      "dispatch",
+      "running",
+      { equipmentId: request.equipmentId },
+      `Dispatched to ${request.equipmentId}`,
+      request.owner,
     );
   }
   function focusLine(lineId: string) {
@@ -134,29 +132,7 @@ export const useFactoryStore = defineStore("factory", () => {
       alert.id === alertId ? { ...alert, acknowledged: true } : alert,
     );
   }
-  function holdLot(request: LotHoldRequest) {
-    const targetLot = lots.value.find((lot) => lot.id === request.lotId);
-    if (!targetLot) {
-      return;
-    }
-    const reason = request.reason.trim() || "Manual engineering hold";
-    const timestamp = new Date().toISOString();
-    addLotActionEvent({
-      id: `event-${timestamp}-${request.lotId}`,
-      lotId: request.lotId,
-      type: "hold",
-      fromStatus: targetLot.status,
-      toStatus: "hold",
-      reason,
-      owner: request.owner,
-      createdAt: timestamp,
-    });
-    lots.value = lots.value.map((lot) =>
-      lot.id === request.lotId
-        ? { ...lot, status: "hold", holdReason: reason, updatedAt: timestamp }
-        : lot,
-    );
-  }
+
   async function fetchSnapshot() {
     isLoading.value = true;
     error.value = "";
