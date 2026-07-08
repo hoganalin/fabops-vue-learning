@@ -209,6 +209,14 @@ h2 {
   color: #b42318;
   background: #fde8e7;
 }
+.ghost-button {
+  background: transparent;
+  border: none;
+  color: #aebbc8;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .secondary-button {
   width: fit-content;
   min-height: 34px;

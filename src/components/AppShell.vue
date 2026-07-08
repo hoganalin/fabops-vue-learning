@@ -84,15 +84,15 @@ function handleSimulateNextSnapshotFailure() {
               :disabled="factoryStore.isLoading"
               @click="handleRetrySnapshot"
             >
-              Retry
+              {{ factoryStore.error ? "Retry" : "Refresh" }}
             </button>
             <button
-              class="secondary-button"
+              class="ghost-button"
               type="button"
               :disabled="factoryStore.isLoading"
               @click="handleSimulateNextSnapshotFailure"
             >
-              Simulate API Error
+              Simulate API Error (demo)
             </button>
           </div>
         </div>
