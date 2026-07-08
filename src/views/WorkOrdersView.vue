@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia";
 import { useStatusFilter } from "../composables/useStatusFilter";
 import { ref } from "vue";
 import type { WorkOrderStatus } from "../types/factory";
+import StatusPill from "../components/StatusPill.vue";
 
 const factoryStore = useFactoryStore();
 const { workOrders } = storeToRefs(factoryStore);
@@ -13,6 +14,18 @@ const { filteredItems: filteredWorkOrders } = useStatusFilter(
   workOrders,
   statusFilter,
 );
+const workOrderToneMap: Record<
+  WorkOrderStatus,
+  "good" | "warn" | "critical" | "neutral"
+> = {
+  queued: "neutral",
+  running: "good",
+  blocked: "critical",
+  done: "warn",
+};
+function workOrderTone(status: WorkOrderStatus) {
+  return workOrderToneMap[status];
+}
 </script>
 
 <template>
@@ -47,7 +60,10 @@ const { filteredItems: filteredWorkOrders } = useStatusFilter(
         <strong>{{ order.id }} - {{ order.product }}</strong>
         <p>{{ order.step }} · {{ order.owner }}</p>
         <p>
-          <span :class="['status', order.status]">{{ order.status }}</span>
+          <StatusPill
+            :label="order.status"
+            :tone="workOrderTone(order.status)"
+          />
         </p>
         <p>{{ order.completedQty }} / {{ order.plannedQty }}</p>
       </li>
