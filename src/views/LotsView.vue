@@ -8,6 +8,7 @@ import { useLotFilters } from "../composables/useLotFilters";
 import type { ProductionLot, LotPriority, LotStatus } from "../types/factory";
 import LotDetailPanel from "../components/LotDetailPanel.vue";
 import LotEventList from "../components/LotEventList.vue";
+import LotActionPanel from "../components/LotActionPanel.vue";
 const factoryStore = useFactoryStore();
 const router = useRouter();
 const route = useRoute();
@@ -57,27 +58,16 @@ const { filteredLots } = useLotFilters(
   statusFilter,
   priorityFilter,
 );
-const holdReason = ref("");
-const holdOwner = ref("Shift lead");
 const dispatchEquipmentId = ref("");
 const dispatchOwner = ref("Shift lead");
 const dispatchError = ref("");
 
-const canHoldSelectedLot = computed(() => {
-  return selectedLot.value !== null && selectedLot.value.status !== "hold";
-});
-const canReleaseSelectedLot = computed(() => {
-  return selectedLot.value !== null && selectedLot.value.status === "hold";
-});
-const canCompleteSelectedLot = computed(() => {
-  return selectedLot.value !== null && selectedLot.value.status === "running";
-});
 const canDispatchSelectedLot = computed(() => {
   return selectedLot.value !== null && selectedLot.value.status === "pending";
 });
 
 function handleCompleteLot() {
-  if (!selectedLot.value || !canCompleteSelectedLot.value) {
+  if (!selectedLot.value) {
     return;
   }
   const lotId = selectedLot.value.id;
@@ -147,21 +137,20 @@ function clearFilters() {
 function handleLotSelect(lot: ProductionLot) {
   selectedLot.value = lot;
 }
-function handleHoldLot() {
-  if (!selectedLot.value || !canHoldSelectedLot.value) {
+function handleHoldLot(reason: string, owner: string) {
+  if (!selectedLot.value) {
     return;
   }
   const lotId = selectedLot.value.id;
   factoryStore.holdLot({
     lotId,
-    reason: holdReason.value,
-    owner: holdOwner.value,
+    reason,
+    owner,
   });
   selectedLot.value = factoryStore.lots.find((lot) => lot.id === lotId) ?? null;
-  holdReason.value = "";
 }
 function handleReleaseLot() {
-  if (!selectedLot.value || !canReleaseSelectedLot.value) {
+  if (!selectedLot.value) {
     return;
   }
   const lotId = selectedLot.value.id;
@@ -257,49 +246,12 @@ function handleReleaseLot() {
           {{ dispatchError }}
         </p>
       </section>
-      <section class="lot-action-panel" aria-label="lot actions">
-        <label class="filter-field"
-          >hold reason
-          <input
-            type="text"
-            v-model="holdReason"
-            placeholder="Reason for holding this lot"
-          />
-        </label>
-        <label class="filter-field">
-          owner
-          <input
-            type="text"
-            v-model="holdOwner"
-            placeholder="Owner of this lot"
-          />
-        </label>
-        <button
-          class="secondary-button"
-          type="button"
-          @click="handleHoldLot"
-          :disabled="!canHoldSelectedLot"
-        >
-          Hold Lot
-        </button>
-
-        <button
-          class="secondary-button"
-          type="button"
-          @click="handleReleaseLot"
-          :disabled="!canReleaseSelectedLot"
-        >
-          Release Lot
-        </button>
-        <button
-          type="button"
-          @click="handleCompleteLot"
-          :disabled="!canCompleteSelectedLot"
-          class="secondary-button"
-        >
-          Complete Lot
-        </button>
-      </section>
+      <LotActionPanel
+        :lot="selectedLot"
+        @hold="handleHoldLot"
+        @release="handleReleaseLot"
+        @complete="handleCompleteLot"
+      />
       <LotEventList :events="factoryStore.recentLotActionEvents" />
     </aside>
   </section>
