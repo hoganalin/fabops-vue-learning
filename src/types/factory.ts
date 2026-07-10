@@ -42,7 +42,7 @@ export interface WorkOrder {
   dueAt: string;
   status: WorkOrderStatus;
   priority: Priority;
-  risk: string;
+  risk: HandoffRisk;
   updatedAt: string;
 }
 
@@ -96,4 +96,10 @@ export interface HandoffRequest {
   shiftLead: string;
   summary: string;
   risk: HandoffRisk;
+}
+export interface HourlyOutputPoint {
+  lineId: string;
+  hour: string;
+  output: number;
+  target: number;
 }

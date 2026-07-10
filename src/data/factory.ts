@@ -1,5 +1,6 @@
 import type {
   FactoryAlert,
+  HourlyOutputPoint,
   ProductionLine,
   ProductionLot,
   WorkOrder,
@@ -161,4 +162,22 @@ export const workOrders: WorkOrder[] = [
     risk: "high",
     updatedAt: "2026-06-22T10:50:00+08:00",
   },
+];
+export const hourlyOutput: HourlyOutputPoint[] = [
+  { lineId: "line-litho-a", hour: "08:00", output: 492, target: 500 },
+  { lineId: "line-litho-a", hour: "09:00", output: 505, target: 500 },
+  { lineId: "line-litho-a", hour: "10:00", output: 478, target: 500 },
+  { lineId: "line-litho-a", hour: "11:00", output: 496, target: 500 },
+  { lineId: "line-litho-a", hour: "12:00", output: 461, target: 500 },
+  { lineId: "line-litho-a", hour: "13:00", output: 488, target: 500 },
+  { lineId: "line-litho-a", hour: "14:00", output: 502, target: 500 },
+  { lineId: "line-litho-a", hour: "15:00", output: 495, target: 500 },
+  { lineId: "line-smt-2", hour: "08:00", output: 352, target: 360 },
+  { lineId: "line-smt-2", hour: "09:00", output: 345, target: 360 },
+  { lineId: "line-smt-2", hour: "10:00", output: 338, target: 360 },
+  { lineId: "line-smt-2", hour: "11:00", output: 329, target: 360 },
+  { lineId: "line-smt-2", hour: "12:00", output: 318, target: 360 },
+  { lineId: "line-smt-2", hour: "13:00", output: 311, target: 360 },
+  { lineId: "line-smt-2", hour: "14:00", output: 304, target: 360 },
+  { lineId: "line-smt-2", hour: "15:00", output: 298, target: 360 },
 ];

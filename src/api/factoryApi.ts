@@ -3,6 +3,7 @@ import {
   productionLines,
   productionLots,
   workOrders,
+  hourlyOutput,
 } from "../data/factory";
 
 import type {
@@ -10,6 +11,7 @@ import type {
   ProductionLine,
   ProductionLot,
   WorkOrder,
+  HourlyOutputPoint,
 } from "../types/factory";
 
 export interface FactorySnapshot {
@@ -17,6 +19,7 @@ export interface FactorySnapshot {
   alerts: FactoryAlert[];
   lots: ProductionLot[];
   workOrders: WorkOrder[];
+  hourlyOutput: HourlyOutputPoint[];
 }
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -45,5 +48,6 @@ export async function getFactorySnapshot(): Promise<FactorySnapshot> {
     alerts: factoryAlerts,
     lots: productionLots,
     workOrders: workOrders,
+    hourlyOutput,
   });
 }

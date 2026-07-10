@@ -13,6 +13,7 @@ import type {
   WorkOrder,
   LotActionType,
   LotStatus,
+  HourlyOutputPoint,
 } from "../types/factory";
 
 export const useFactoryStore = defineStore("factory", () => {
@@ -43,6 +44,8 @@ export const useFactoryStore = defineStore("factory", () => {
   const recentLotActionEvents = computed(() => {
     return lotActionEvents.value.slice(0, 5);
   });
+  const hourlyOutput = ref<HourlyOutputPoint[]>([]);
+
   function addLotActionEvent(event: LotActionEvent) {
     lotActionEvents.value = [event, ...lotActionEvents.value];
   }
@@ -143,6 +146,7 @@ export const useFactoryStore = defineStore("factory", () => {
       lots.value = snapshot.lots;
       workOrders.value = snapshot.workOrders;
       selectedLineId.value = snapshot.lines[0]?.id ?? "";
+      hourlyOutput.value = snapshot.hourlyOutput;
     } catch (cause) {
       error.value =
         cause instanceof Error ? cause.message : "Unable to load factory data";
@@ -190,5 +194,6 @@ export const useFactoryStore = defineStore("factory", () => {
     handoffs,
     submitHandoff,
     workOrders,
+    hourlyOutput,
   };
 });
