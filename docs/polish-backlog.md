@@ -1,5 +1,8 @@
 # UI/UX 打磨待辦清單
 
+> 2026-07-11 起專案已導入根目錄 `DESIGN.md`（Linear 深色系統）。
+> 之後所有 UI 修改一律遵循該文件的 token,顏色不得寫死 hex。
+
 上線後回頭處理的項目，按投報率排序。
 
 ## Snapshot 工具列（AppShell）
