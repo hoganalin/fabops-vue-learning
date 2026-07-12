@@ -3,6 +3,7 @@ import { useFactoryStore } from "../stores/factory";
 import AlertList from "../components/AlertList.vue";
 import LineCard from "../components/LineCard.vue";
 import KpiCard from "../components/KpiCard.vue";
+import OutputTrendChart from "../components/OutputTrendChart.vue";
 
 const factoryStore = useFactoryStore();
 
@@ -53,6 +54,10 @@ function handleLineFocus(lineId: string) {
           meta="SMT line health"
         />
       </div>
+    </section>
+    <section class="overview-panel">
+      <h2>Hourly Output Trend</h2>
+      <OutputTrendChart />
     </section>
     <AlertList
       :alerts="factoryStore.activeAlerts"
